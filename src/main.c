@@ -1,5 +1,7 @@
 #include "core.h"
 #include "fileio.h"
+#include "ui.h"
+#include "editor.h"
 
 int main(int argc, char* argv[])
 {
@@ -13,9 +15,13 @@ int main(int argc, char* argv[])
 
     if (!fb)
     {
+        fprintf(stderr, "Error: Could not open file '%s'\n", argv[1]);
         return 1;
     }
 
+    init_ui();
+    run_editor(fb);
+    end_ui();
 
     close_file(fb);
     

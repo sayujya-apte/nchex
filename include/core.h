@@ -12,8 +12,10 @@
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <signal.h>
+#include <ctype.h>
 
-#define HEX_PER_LINE     16
+#define BYTES_PER_ROW     16
 #define MAX_FILENAME_LEN 256
 
 #endif

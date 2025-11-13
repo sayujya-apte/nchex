@@ -8,7 +8,6 @@ set(
 
     src/main.c
     src/fileio.c
-    src/ui.c
     src/editor.c
 )
 
