@@ -26,6 +26,7 @@ void init_ui()
 {
     initscr();
     use_default_colors();
+    set_escdelay(25);
     cbreak();
     noecho();
     keypad(stdscr, TRUE);
@@ -39,7 +40,7 @@ void end_ui()
 
 void clear_screen()
 {
-    clear();
+    erase();
     refresh();
 }
 
@@ -104,9 +105,9 @@ static void draw_screen()
             continue;
         }
 
-        mvprintw(r, 0, "%08zx:\t", offset);
+        mvprintw(r, 0, "%08zx: ", offset);
         
-        int col = 12;
+        int col = 11;
         for (uint32_t i = 0; i < bytes; i++)
         {
             uint32_t idx = offset + i;
@@ -137,7 +138,7 @@ static void draw_screen()
 
         if (e.mode == MODE_COMMAND)
         {
-            mvprintw(e.rows - 1, 0, "%s", e.cmd);
+            mvprintw(e.rows - 1, 0, ":%s", e.cmd);
         }
         else if (e.mode == MODE_HEX_INSERT)
         {
@@ -150,6 +151,20 @@ static void draw_screen()
         else
         {
             mvprintw(e.rows - 1, 0, "--- NORMAL ---");
+        }
+         
+        uint32_t curr_row = e.cursor / bytes;
+        uint32_t curr_col = e.cursor % bytes;
+        top_row = e.row_offset / bytes;
+        int vis_row = (int) (curr_row - top_row);
+
+        if (vis_row >= 0 && vis_row < (e.rows - 2))
+        {
+            int hex_start_x = 11;
+            int hex_x = hex_start_x + (int)curr_col * 3;
+
+            move(vis_row, hex_x);
+            curs_set(1);
         }
 
         refresh();
@@ -173,6 +188,7 @@ static void handle_command()
         exit(0);
     } else {
         set_status("Unknown command: %s", e.cmd);
+        e.cmd[0] = '\0';
     }
 }
 
